@@ -231,4 +231,53 @@ body {
   color: var(--muted);
 }
 
+/* Timeline */
+.timeline-card {
+  margin-top: 18px;
+}
+
+.timeline-status {
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 820px) {
+  .timeline {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.ti-year {
+  font-family: 'Space Grotesk', Inter, system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.ti-meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ti-title {
+  font-weight: 600;
+}
+
 

@@ -164,4 +164,120 @@ function getChineseZodiac(year) {
   return { animal, element };
 }
 
+// Timeline: Open-Meteo for Geneva weather, moon phase computed locally
+// Geneva coords
+const GENEVA = { lat: 46.2044, lon: 6.1432, tz: 'Europe/Zurich' };
+
+async function buildTimeline() {
+  const statusEl = document.getElementById('timeline-status');
+  const container = document.getElementById('timeline');
+  if (!container) return;
+
+  try {
+    const years = [];
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    // last birthday year is currentYear if we've passed Aug 14, else currentYear - 1
+    const lastYear = (new Date(currentYear, 7, 14) <= now) ? currentYear : currentYear - 1;
+    for (let y = 2003; y <= lastYear; y++) years.push(y);
+
+    // For performance, fetch in small batches sequentially to respect rate limits
+    const items = [];
+    for (const y of years) {
+      const d = new Date(y, 7, 14); // Aug 14 y
+      const isoDate = d.toISOString().slice(0, 10);
+      const weather = await fetchDailyWeather(GENEVA.lat, GENEVA.lon, isoDate, GENEVA.tz);
+      const phase = moonPhase(d);
+      items.push({ year: y, date: isoDate, weather, phase });
+    }
+
+    container.innerHTML = items.map(renderTimelineItem).join('');
+    if (statusEl) statusEl.textContent = `Loaded ${items.length} birthdays`;
+  } catch (err) {
+    if (statusEl) statusEl.textContent = 'Failed to load timeline';
+    console.error(err);
+  }
+}
+
+function renderTimelineItem(item) {
+  const { year, date, weather, phase } = item;
+  const tmax = weather?.temperature_2m_max ?? '—';
+  const tmin = weather?.temperature_2m_min ?? '—';
+  const precip = weather?.precipitation_sum ?? '—';
+  const desc = weather?.weathercode_text ?? weather?.weathercode ?? '—';
+  return `
+    <div class="timeline-item">
+      <div class="ti-year">${year}</div>
+      <div>
+        <div class="ti-title">${date} — Geneva</div>
+        <div class="ti-meta">Weather: max ${tmax}°C, min ${tmin}°C, precip ${precip}mm — ${desc}</div>
+        <div class="ti-meta">Moon phase: ${phase.name} (${(phase.illumination * 100).toFixed(0)}%)</div>
+      </div>
+    </div>
+  `;
+}
+
+async function fetchDailyWeather(lat, lon, date, timezone) {
+  const url = new URL('https://api.open-meteo.com/v1/forecast');
+  url.searchParams.set('latitude', String(lat));
+  url.searchParams.set('longitude', String(lon));
+  url.searchParams.set('timezone', timezone);
+  url.searchParams.set('start_date', date);
+  url.searchParams.set('end_date', date);
+  url.searchParams.set('daily', 'temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode');
+  const res = await fetch(url.toString());
+  const data = await res.json();
+  const day = 0;
+  const wc = (data.daily?.weathercode?.[day]);
+  return {
+    temperature_2m_max: data.daily?.temperature_2m_max?.[day],
+    temperature_2m_min: data.daily?.temperature_2m_min?.[day],
+    precipitation_sum: data.daily?.precipitation_sum?.[day],
+    weathercode: wc,
+    weathercode_text: weatherCodeToText(wc)
+  };
+}
+
+function weatherCodeToText(code) {
+  const map = {
+    0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+    45: 'Fog', 48: 'Depositing rime fog',
+    51: 'Light drizzle', 53: 'Moderate drizzle', 55: 'Dense drizzle',
+    56: 'Light freezing drizzle', 57: 'Dense freezing drizzle',
+    61: 'Slight rain', 63: 'Moderate rain', 65: 'Heavy rain',
+    66: 'Light freezing rain', 67: 'Heavy freezing rain',
+    71: 'Slight snow fall', 73: 'Moderate snow fall', 75: 'Heavy snow fall',
+    77: 'Snow grains', 80: 'Slight rain showers', 81: 'Moderate rain showers', 82: 'Violent rain showers',
+    85: 'Slight snow showers', 86: 'Heavy snow showers',
+    95: 'Thunderstorm', 96: 'Thunderstorm with slight hail', 99: 'Thunderstorm with heavy hail'
+  };
+  return map[code] ?? undefined;
+}
+
+// Approx moon phase calculation (simple but serviceable)
+function moonPhase(date) {
+  const synodic = 29.530588853; // days
+  // Known new moon reference: 2000-01-06 18:14 UTC
+  const ref = Date.UTC(2000, 0, 6, 18, 14, 0, 0);
+  const daysSince = (Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) - ref) / 86400000;
+  const phase = (daysSince % synodic + synodic) % synodic;
+  const illumination = (1 - Math.cos(2 * Math.PI * phase / synodic)) / 2;
+  let name = 'New Moon';
+  if (phase < 1.84566) name = 'New Moon';
+  else if (phase < 5.53699) name = 'Waxing Crescent';
+  else if (phase < 9.22831) name = 'First Quarter';
+  else if (phase < 12.91963) name = 'Waxing Gibbous';
+  else if (phase < 16.61096) name = 'Full Moon';
+  else if (phase < 20.30228) name = 'Waning Gibbous';
+  else if (phase < 23.99361) name = 'Last Quarter';
+  else if (phase < 27.68493) name = 'Waning Crescent';
+  else name = 'New Moon';
+  return { phase, illumination, name };
+}
+
+// Start building timeline after paint
+window.addEventListener('load', () => {
+  buildTimeline();
+});
+
 
