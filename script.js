@@ -19,6 +19,7 @@
     cdHours: document.getElementById('cd-hours'),
     cdMinutes: document.getElementById('cd-minutes'),
     cdSeconds: document.getElementById('cd-seconds'),
+    cdTotalSeconds: document.getElementById('cd-total-seconds'),
     westernSign: document.getElementById('western-sign'),
     chineseSign: document.getElementById('chinese-sign'),
     chineseElement: document.getElementById('chinese-element'),
@@ -90,11 +91,13 @@
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    const totalSecondsRemaining = Math.floor(diff / 1000);
 
     el.cdDays.textContent = days;
     el.cdHours.textContent = pad2(hours);
     el.cdMinutes.textContent = pad2(minutes);
     el.cdSeconds.textContent = pad2(seconds);
+    el.cdTotalSeconds.textContent = totalSecondsRemaining.toLocaleString();
   }
 
   function tick() {
