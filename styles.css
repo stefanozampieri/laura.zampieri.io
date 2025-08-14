@@ -280,4 +280,10 @@ body {
   font-weight: 600;
 }
 
+.ti-emoji {
+  font-size: 20px;
+  margin-right: 6px;
+  vertical-align: -3px;
+}
+
 

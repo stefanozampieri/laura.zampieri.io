@@ -205,13 +205,15 @@ function renderTimelineItem(item) {
   const tmin = weather?.temperature_2m_min ?? '—';
   const precip = weather?.precipitation_sum ?? '—';
   const desc = weather?.weathercode_text ?? weather?.weathercode ?? '—';
+  const wicon = weatherCodeToEmoji(weather?.weathercode);
+  const micon = moonPhaseToEmoji(phase.name);
   return `
     <div class="timeline-item">
       <div class="ti-year">${year}</div>
       <div>
         <div class="ti-title">${date} — Geneva</div>
-        <div class="ti-meta">Weather: max ${tmax}°C, min ${tmin}°C, precip ${precip}mm — ${desc}</div>
-        <div class="ti-meta">Moon phase: ${phase.name} (${(phase.illumination * 100).toFixed(0)}%)</div>
+        <div class="ti-meta"><span class="ti-emoji">${wicon}</span>Weather: max ${tmax}°C, min ${tmin}°C, precip ${precip}mm — ${desc}</div>
+        <div class="ti-meta"><span class="ti-emoji">${micon}</span>Moon phase: ${phase.name} (${(phase.illumination * 100).toFixed(0)}%)</div>
       </div>
     </div>
   `;
@@ -252,6 +254,36 @@ function weatherCodeToText(code) {
     95: 'Thunderstorm', 96: 'Thunderstorm with slight hail', 99: 'Thunderstorm with heavy hail'
   };
   return map[code] ?? undefined;
+}
+
+function weatherCodeToEmoji(code) {
+  const map = {
+    0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+    45: '🌫️', 48: '🌫️',
+    51: '🌦️', 53: '🌦️', 55: '🌧️',
+    56: '🌧️', 57: '🌧️',
+    61: '🌦️', 63: '🌧️', 65: '🌧️',
+    66: '🌧️', 67: '🌧️',
+    71: '🌨️', 73: '🌨️', 75: '❄️',
+    77: '❄️', 80: '🌦️', 81: '🌧️', 82: '⛈️',
+    85: '🌨️', 86: '❄️',
+    95: '⛈️', 96: '⛈️', 99: '⛈️'
+  };
+  return map?.[code] ?? '🌡️';
+}
+
+function moonPhaseToEmoji(name) {
+  switch (name) {
+    case 'New Moon': return '🌑';
+    case 'Waxing Crescent': return '🌒';
+    case 'First Quarter': return '🌓';
+    case 'Waxing Gibbous': return '🌔';
+    case 'Full Moon': return '🌕';
+    case 'Waning Gibbous': return '🌖';
+    case 'Last Quarter': return '🌗';
+    case 'Waning Crescent': return '🌘';
+    default: return '🌙';
+  }
 }
 
 // Approx moon phase calculation (simple but serviceable)
