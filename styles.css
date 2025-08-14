@@ -254,6 +254,28 @@ body {
   color: var(--muted);
 }
 
+/* Click-spawn images */
+.click-pop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 150px;
+  height: 150px;
+  transform: translate(-50%, -50%) scale(1);
+  border-radius: 12px;
+  object-fit: cover;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), var(--glow);
+  animation: pop-fade 1.8s ease-out forwards;
+}
+
+@keyframes pop-fade {
+  0% { opacity: 1; transform: translate(-50%, -50%) scale(0.9); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15); }
+}
+
 .footer {
   text-align: center;
   margin-top: 28px;

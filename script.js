@@ -269,3 +269,26 @@ window.addEventListener('load', () => {
 });
 
 
+
+// Click-to-pop random images (laura1/2/3.png)
+(function setupClickPops() {
+  const images = ['laura1.png', 'laura2.png', 'laura3.png'];
+  function pick() {
+    return images[Math.floor(Math.random() * images.length)];
+  }
+  function spawn(x, y) {
+    const img = document.createElement('img');
+    img.src = pick();
+    img.className = 'click-pop';
+    img.style.left = `${x}px`;
+    img.style.top = `${y}px`;
+    document.body.appendChild(img);
+    const remove = () => img.remove();
+    img.addEventListener('animationend', remove);
+    // Fallback removal
+    setTimeout(remove, 2200);
+  }
+  window.addEventListener('click', (e) => {
+    spawn(e.clientX, e.clientY);
+  });
+})();
