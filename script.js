@@ -230,7 +230,7 @@ function renderTimelineItem(item) {
       <div class="ti-year">${year}</div>
       <div>
         <div class="ti-title">${date} — Geneva</div>
-        <div class="ti-meta"><span class="ti-emoji">${wicon}</span>Weather: max ${tmax}°C, min ${tmin}°C, precip ${precip}mm — ${desc}</div>
+        <div class="ti-meta"><span class="ti-emoji" title="${desc}" aria-label="Weather: ${desc}">${wicon}</span></div>
         <div class="ti-meta"><span class="ti-emoji">${micon}</span>Moon phase: ${phase.name} (${(phase.illumination * 100).toFixed(0)}%)</div>
       </div>
     </div>
