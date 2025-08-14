@@ -18,7 +18,11 @@
     cdDays: document.getElementById('cd-days'),
     cdHours: document.getElementById('cd-hours'),
     cdMinutes: document.getElementById('cd-minutes'),
-    cdSeconds: document.getElementById('cd-seconds')
+    cdSeconds: document.getElementById('cd-seconds'),
+    westernSign: document.getElementById('western-sign'),
+    chineseSign: document.getElementById('chinese-sign'),
+    chineseElement: document.getElementById('chinese-element'),
+    birthstone: document.getElementById('birthstone')
   };
 
   function pad2(value) {
@@ -96,6 +100,7 @@
   function tick() {
     updateAge();
     updateCountdown();
+    updateZodiac();
   }
 
   // Initial paint
@@ -103,5 +108,51 @@
   // Update twice a second for snappier seconds roll-over
   setInterval(tick, 500);
 })();
+
+function updateZodiac() {
+  const western = getWesternZodiac(new Date(2003, 7, 14));
+  const { animal, element } = getChineseZodiac(2003);
+  const stone = 'Peridot';
+  const el = {
+    westernSign: document.getElementById('western-sign'),
+    chineseSign: document.getElementById('chinese-sign'),
+    chineseElement: document.getElementById('chinese-element'),
+    birthstone: document.getElementById('birthstone')
+  };
+  if (el.westernSign) el.westernSign.textContent = western;
+  if (el.chineseSign) el.chineseSign.textContent = animal;
+  if (el.chineseElement) el.chineseElement.textContent = element;
+  if (el.birthstone) el.birthstone.textContent = stone;
+}
+
+function getWesternZodiac(date) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  // Date ranges inclusive of start date
+  if ((m === 3 && d >= 21) || (m === 4 && d <= 19)) return 'Aries';
+  if ((m === 4 && d >= 20) || (m === 5 && d <= 20)) return 'Taurus';
+  if ((m === 5 && d >= 21) || (m === 6 && d <= 20)) return 'Gemini';
+  if ((m === 6 && d >= 21) || (m === 7 && d <= 22)) return 'Cancer';
+  if ((m === 7 && d >= 23) || (m === 8 && d <= 22)) return 'Leo';
+  if ((m === 8 && d >= 23) || (m === 9 && d <= 22)) return 'Virgo';
+  if ((m === 9 && d >= 23) || (m === 10 && d <= 22)) return 'Libra';
+  if ((m === 10 && d >= 23) || (m === 11 && d <= 21)) return 'Scorpio';
+  if ((m === 11 && d >= 22) || (m === 12 && d <= 21)) return 'Sagittarius';
+  if ((m === 12 && d >= 22) || (m === 1 && d <= 19)) return 'Capricorn';
+  if ((m === 1 && d >= 20) || (m === 2 && d <= 18)) return 'Aquarius';
+  return 'Pisces';
+}
+
+function getChineseZodiac(year) {
+  const animals = ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Goat','Monkey','Rooster','Dog','Pig'];
+  const elements = ['Wood','Fire','Earth','Metal','Water'];
+  // 2000 was Dragon, element Metal. We'll derive cyclical element; cycle is 10 years (heavenly stems) but simplify mapping by known base.
+  // Use 1984 as Wood Rat start for 60-year cycle
+  const base = 1984;
+  const diff = year - base;
+  const animal = animals[(diff % 12 + 12) % 12];
+  const element = elements[(Math.floor(((diff % 10) + 10) % 10 / 2)) % 5];
+  return { animal, element };
+}
 
 
