@@ -117,12 +117,18 @@ function updateZodiac() {
     westernSign: document.getElementById('western-sign'),
     chineseSign: document.getElementById('chinese-sign'),
     chineseElement: document.getElementById('chinese-element'),
-    birthstone: document.getElementById('birthstone')
+    birthstone: document.getElementById('birthstone'),
+    factWestern: document.getElementById('fact-western'),
+    factChinese: document.getElementById('fact-chinese'),
+    factStone: document.getElementById('fact-birthstone')
   };
   if (el.westernSign) el.westernSign.textContent = western;
   if (el.chineseSign) el.chineseSign.textContent = animal;
   if (el.chineseElement) el.chineseElement.textContent = element;
   if (el.birthstone) el.birthstone.textContent = stone;
+  if (el.factWestern) el.factWestern.textContent = `Western: ${western}`;
+  if (el.factChinese) el.factChinese.textContent = `Chinese: ${animal} (${element})`;
+  if (el.factStone) el.factStone.textContent = `Birthstone: ${stone}`;
 }
 
 function getWesternZodiac(date) {
