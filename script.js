@@ -23,7 +23,10 @@
     westernSign: document.getElementById('western-sign'),
     chineseSign: document.getElementById('chinese-sign'),
     chineseElement: document.getElementById('chinese-element'),
-    birthstone: document.getElementById('birthstone')
+    birthstone: document.getElementById('birthstone'),
+    lifeFill: document.getElementById('life-progress-fill'),
+    lifePercent: document.getElementById('life-progress-percent'),
+    lifeEta: document.getElementById('life-progress-eta')
   };
 
   function pad2(value) {
@@ -100,10 +103,25 @@
     el.cdTotalSeconds.textContent = totalSecondsRemaining.toLocaleString();
   }
 
+  function updateLifeProgress() {
+    const now = new Date();
+    const hundred = new Date(BIRTH_YEAR + 100, BIRTH_MONTH_IDX, BIRTH_DAY, 0, 0, 0, 0);
+    const total = hundred.getTime() - birthDate.getTime();
+    const progressed = now.getTime() - birthDate.getTime();
+    const pct = Math.max(0, Math.min(100, (progressed / total) * 100));
+    if (el.lifeFill) el.lifeFill.style.width = pct.toFixed(6) + '%';
+    if (el.lifePercent) el.lifePercent.textContent = pct.toFixed(6) + '%';
+
+    const msLeft = Math.max(0, hundred.getTime() - now.getTime());
+    const yearsLeft = msLeft / (1000 * 60 * 60 * 24 * 365.2425);
+    if (el.lifeEta) el.lifeEta.textContent = `${yearsLeft.toFixed(6)} years left to 100`;
+  }
+
   function tick() {
     updateAge();
     updateCountdown();
     updateZodiac();
+    updateLifeProgress();
   }
 
   // Initial paint
