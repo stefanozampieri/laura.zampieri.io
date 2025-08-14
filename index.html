@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Happy Birthday, Laura!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="background-ornaments" aria-hidden="true">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <main class="container">
+      <header class="hero">
+        <h1>Happy Birthday, <span class="shine">Laura</span>!</h1>
+        <p class="subtitle">Born August 14, 2003</p>
+      </header>
+
+      <section class="widgets">
+        <article class="card" id="age-card">
+          <h2 class="card-title">Live age</h2>
+          <div class="age-display">
+            <div class="row">
+              <div class="unit"><span id="age-years">0</span><label>years</label></div>
+              <div class="unit"><span id="age-months">0</span><label>months</label></div>
+              <div class="unit"><span id="age-days">0</span><label>days</label></div>
+            </div>
+            <div class="row">
+              <div class="unit"><span id="age-hours">0</span><label>hours</label></div>
+              <div class="unit"><span id="age-minutes">0</span><label>minutes</label></div>
+              <div class="unit"><span id="age-seconds">0</span><label>seconds</label></div>
+            </div>
+            <div class="totals">
+              <div><span id="total-days">0</span> total days</div>
+              <div><span id="total-seconds">0</span> total seconds</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" id="countdown-card">
+          <h2 class="card-title">Next birthday countdown</h2>
+          <div class="countdown-display">
+            <div class="row">
+              <div class="unit"><span id="cd-days">0</span><label>days</label></div>
+              <div class="unit"><span id="cd-hours">0</span><label>hours</label></div>
+              <div class="unit"><span id="cd-minutes">0</span><label>minutes</label></div>
+              <div class="unit"><span id="cd-seconds">0</span><label>seconds</label></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <footer class="footer">
+        <p>Made with love for Laura</p>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
